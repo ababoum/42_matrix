@@ -76,6 +76,14 @@ class Vector():
         else:
             if isinstance(other, Vector):
                 return other.__mul__(self)
+            
+    def __getitem__(self, key):
+        if self.type == 'row':
+            return self.values[key]
+        elif self.type == 'column':
+            return self.values[key][0]
+        else:
+            raise Exception("Vector type not recognized")
 
     ##### DOT PRODUCT #####
 
@@ -94,3 +102,29 @@ class Vector():
         else:
             raise TypeError(
                 "Cannot compute dot product of vector with non-vector")
+
+    ##### NORMS #####
+
+    def norm_1(self):
+        if self.type == 'row':
+            return sum([abs(i) for i in self.values])
+        elif self.type == 'column':
+            return sum([abs(i[0]) for i in self.values])
+        else:
+            raise Exception("Vector type not recognized")
+
+    def norm(self):
+        if self.type == 'row':
+            return sum([i ** 2 for i in self.values]) ** 0.5
+        elif self.type == 'column':
+            return sum([i[0] ** 2 for i in self.values]) ** 0.5
+        else:
+            raise Exception("Vector type not recognized")
+        
+    def norm_inf(self):
+        if self.type == 'row':
+            return max([abs(i) for i in self.values])
+        elif self.type == 'column':
+            return max([abs(i[0]) for i in self.values])
+        else:
+            raise Exception("Vector type not recognized")
