@@ -86,6 +86,13 @@ class Matrix():
         else:
             raise TypeError("Cannot multiply non-matrix by matrix")
 
+    ##### SUBMATRIX #####
+    def submatrix(self, i, j):
+        return Matrix([
+            [self.values[x][k] for k in range(self.shape[1]) if k != j]
+            for x in range(self.shape[0]) if x != i
+        ])
+
     ##### TRACE #####
 
     def trace(self):
@@ -98,3 +105,80 @@ class Matrix():
 
     def transpose(self):
         return Matrix([[self.values[j][i]for j in range(len(self.values))] for i in range(len(self.values[0]))])
+
+    ##### ROW ECHELON FORM #####
+
+    def row_echelon_form(self):
+        rref = self.values.copy()
+        m = self.shape[0]
+        n = self.shape[1]
+
+        r = 0
+        # Step 1: Begin with the leftmost nonzero column. This is a pivot column. The pivot position is at the top.
+        for j in range(n):
+            if not all(rref[i][j] == 0 for i in range(m)):
+                # Step 2: Select a nonzero entry in the pivot column as a pivot. If necessary, interchange rows to move this entry into the pivot position.
+                i = r
+                while i < m and rref[i][j] == 0:
+                    i += 1
+                if i < m:
+                    rref[r], rref[i] = rref[i], rref[r]
+                else:
+                    continue
+                # Step 3: Use row replacement operations to create zeros in all positions in the pivot column
+                for i in range(m):
+                    if rref[i][j] != 0 and i != r:
+                        rref[i] = [rref[i][k] - rref[r][k] * rref[i][j] / rref[r][j]
+                                   for k in range(n)]
+                # Divide the pivot row by the pivot element to make the pivot element 1.
+                rref[r] = [rref[r][k] / rref[r][j] for k in range(n)]
+                rref[r] = [0.0 if x == -0.0 else x for x in rref[r]]
+                r += 1
+                if r == m:
+                    break
+        return Matrix(rref)
+
+    ##### DETERMINANT #####
+
+    def determinant(self):
+        if self.shape[0] == self.shape[1]:
+            if self.shape[0] == 1:
+                return self.values[0][0]
+            elif self.shape[0] == 2:
+                return self.values[0][0] * self.values[1][1] - self.values[0][1] * self.values[1][0]
+            elif self.shape[0] == 3:
+                return self.values[0][0] * self.submatrix(0, 0).determinant() \
+                    - self.values[0][1] * self.submatrix(0, 1).determinant() \
+                    + self.values[0][2] * \
+                    self.submatrix(0, 2).determinant()
+            elif self.shape[0] == 4:
+                return self.values[0][0] * self.submatrix(0, 0).determinant() \
+                    - self.values[0][1] * self.submatrix(0, 1).determinant() \
+                    + self.values[0][2] * self.submatrix(0, 2).determinant() \
+                    - self.values[0][3] * \
+                    self.submatrix(0, 3).determinant()
+            else:
+                raise TypeError(
+                    "Cannot find determinant of matrix larger than 4x4")
+        else:
+            raise TypeError("Cannot find determinant of non-square matrix")
+
+    ##### INVERSE #####
+
+    def inverse(self):
+        if self.shape[0] != self.shape[1]:
+            raise TypeError("Cannot find inverse of non-square matrix")
+        elif self.determinant() == 0:
+            raise TypeError("Cannot find inverse of singular matrix")
+        else:
+            return Matrix([
+                [(-1)**(i+j) * self.submatrix(i, j).determinant()
+                 for j in range(self.shape[1])]
+                for i in range(self.shape[0])
+            ]).transpose() * (1 / self.determinant())
+
+    ##### RANK #####
+
+    def rank(self):
+        return self.row_echelon_form().shape[0] - \
+            sum([all(i == 0 for i in j) for j in self.row_echelon_form().values])
