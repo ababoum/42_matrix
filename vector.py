@@ -1,10 +1,6 @@
 class Vector():
     def __init__(self, *args) -> None:
-        if len(args) == 0:
-            self.values = []
-            self.shape = (0, 0)
-
-        elif len(args) == 1:
+        if len(args) == 1:
             # Row vector
             if isinstance(args[0], list) and all(isinstance(i, (float, int)) for i in args[0]):
                 self.values = args[0]
@@ -76,7 +72,7 @@ class Vector():
         else:
             if isinstance(other, Vector):
                 return other.__mul__(self)
-            
+
     def __getitem__(self, key):
         if self.type == 'row':
             return self.values[key]
@@ -120,7 +116,7 @@ class Vector():
             return sum([i[0] ** 2 for i in self.values]) ** 0.5
         else:
             raise Exception("Vector type not recognized")
-        
+
     def norm_inf(self):
         if self.type == 'row':
             return max([abs(i) for i in self.values])
