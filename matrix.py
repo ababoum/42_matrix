@@ -1,3 +1,5 @@
+from my_complex import Complex
+from my_math import ft_pow
 from vector import Vector
 
 
@@ -5,7 +7,7 @@ class Matrix():
     def __init__(self, *args) -> None:
         if len(args) == 1 and len(args[0]) != 0 and len(args[0][0]) != 0:
             if (isinstance(args[0], list) and all(isinstance(i, list)) for i in args[0]):
-                if all(len(j) == len(args[0][0]) and all(isinstance(k, (float, int)) for k in j) for j in args[0]):
+                if all(len(j) == len(args[0][0]) and all(isinstance(k, (float, int, Complex)) for k in j) for j in args[0]):
                     self.values = args[0]
                     self.shape = (len(args[0]), len(args[0][0]))
                 else:
@@ -172,7 +174,7 @@ class Matrix():
             raise TypeError("Cannot find inverse of singular matrix")
         else:
             return Matrix([
-                [(-1)**(i+j) * self.submatrix(i, j).determinant()
+                [ft_pow(-1, i+j) * self.submatrix(i, j).determinant()
                  for j in range(self.shape[1])]
                 for i in range(self.shape[0])
             ]).transpose() * (1 / self.determinant())

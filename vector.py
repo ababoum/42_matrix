@@ -1,14 +1,18 @@
+from my_math import ft_abs, ft_sqrt
+from my_complex import Complex
+
+
 class Vector():
     def __init__(self, *args) -> None:
         if len(args) == 1:
             # Row vector
-            if isinstance(args[0], list) and all(isinstance(i, (float, int)) for i in args[0]):
+            if isinstance(args[0], list) and all(isinstance(i, (float, int, Complex)) for i in args[0]):
                 self.values = args[0]
                 self.shape = (1, len(args[0]))
                 self.type = "row"
             # Column vector
             elif isinstance(args[0], list) and all(isinstance(i, list) for i in args[0]) and \
-                    all(len(i) == 1 for i in args[0]) and all(isinstance(i[0], (float, int)) for i in args[0]):
+                    all(len(i) == 1 for i in args[0]) and all(isinstance(i[0], (float, int, Complex)) for i in args[0]):
                 self.values = args[0]
                 self.shape = (len(args[0]), 1)
                 self.type = "column"
@@ -103,24 +107,24 @@ class Vector():
 
     def norm_1(self):
         if self.type == 'row':
-            return sum([abs(i) for i in self.values])
+            return sum([ft_abs(i) for i in self.values])
         elif self.type == 'column':
-            return sum([abs(i[0]) for i in self.values])
+            return sum([ft_abs(i[0]) for i in self.values])
         else:
             raise Exception("Vector type not recognized")
 
     def norm(self):
         if self.type == 'row':
-            return sum([i ** 2 for i in self.values]) ** 0.5
+            return ft_sqrt(sum([i * i for i in self.values]))
         elif self.type == 'column':
-            return sum([i[0] ** 2 for i in self.values]) ** 0.5
+            return ft_sqrt(sum([i[0] * i[0] for i in self.values]))
         else:
             raise Exception("Vector type not recognized")
 
     def norm_inf(self):
         if self.type == 'row':
-            return max([abs(i) for i in self.values])
+            return max([ft_abs(i) for i in self.values])
         elif self.type == 'column':
-            return max([abs(i[0]) for i in self.values])
+            return max([ft_abs(i[0]) for i in self.values])
         else:
             raise Exception("Vector type not recognized")
