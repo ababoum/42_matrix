@@ -1,7 +1,5 @@
 '''Complex number class.'''
 
-from my_math import ft_abs
-
 
 class Complex():
     def __init__(self, real, imaginary) -> None:
@@ -9,10 +7,10 @@ class Complex():
         self.imaginary = imaginary
 
     def __str__(self) -> str:
-        return f'{self.real} {("+", "-")[self.imaginary < 0]} {ft_abs(self.imaginary)}i'
+        return f'{self.real} {("+", "-")[self.imaginary < 0]} {(1, -1)[self.imaginary < 0] * self.imaginary}i'
 
     def __repr__(self) -> str:
-        return f'{self.real} {("+", "-")[self.imaginary < 0]} {ft_abs(self.imaginary)}i'
+        return f'{self.real} {("+", "-")[self.imaginary < 0]} {(1, -1)[self.imaginary < 0] * self.imaginary}i'
 
     def __add__(self, other):
         if isinstance(other, Complex):
@@ -65,3 +63,6 @@ class Complex():
 
     def __ne__(self, other):
         return not self.__eq__(other)
+
+    def conjugate(self):
+        return Complex(self.real, -self.imaginary)

@@ -5,9 +5,24 @@ Mathematical functions.
 '''
 
 
-def ft_abs(x: float) -> float:
+from my_complex import Complex
+
+
+def Re(z: Complex | float | int) -> float:
+    '''Returns the real part of z.'''
+    if isinstance(z, (int, float)):
+        return z
+    return z.real
+
+def ft_abs(x: float | int | Complex, type='euclidian') -> float:
     '''Returns the absolute value of x.'''
-    return x if x >= 0 else -x
+    if isinstance(x, (int, float)):
+        return x if x >= 0 else -x
+    elif isinstance(x, Complex):
+        if type == 'euclidian':
+            return ft_sqrt(x.real * x.real + x.imaginary * x.imaginary)
+        elif type == 'manhattan':
+            return ft_abs(x.real) + ft_abs(x.imaginary)
 
 
 def ft_sqrt(x: float, epsilon=1e-6) -> float:

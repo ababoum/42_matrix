@@ -87,13 +87,20 @@ class Vector():
 
     ##### DOT PRODUCT #####
 
-    def dot(self, other):
+    def dot(self, other) -> float:
         if isinstance(other, Vector):
             if self.shape == other.shape:
                 if self.type == 'row':
-                    return sum([self.values[i] * other.values[i] for i in range(len(self.values))])
+                    right_operand = Vector([other.values[i].conjugate() if isinstance(
+                        other.values[i], Complex) else other.values[i] for i in range(len(other.values))])
+                    return sum([
+                        self.values[i] * right_operand.values[i]
+                        for i in range(len(self.values))
+                    ])
                 elif self.type == 'column':
-                    return sum([self.values[i][0] * other.values[i][0] for i in range(len(self.values))])
+                    right_operand = Vector([other.values[i][0].conjugate() if isinstance(
+                        other.values[i][0], Complex) else other.values[i][0] for i in range(len(other.values))])
+                    return sum([self.values[i][0] * right_operand[i] for i in range(len(self.values))])
                 else:
                     raise Exception("Vector type not recognized")
             else:
@@ -107,17 +114,17 @@ class Vector():
 
     def norm_1(self):
         if self.type == 'row':
-            return sum([ft_abs(i) for i in self.values])
+            return sum([ft_abs(i, type='manhattan') for i in self.values])
         elif self.type == 'column':
-            return sum([ft_abs(i[0]) for i in self.values])
+            return sum([ft_abs(i[0], type='manhattan') for i in self.values])
         else:
             raise Exception("Vector type not recognized")
 
     def norm(self):
         if self.type == 'row':
-            return ft_sqrt(sum([i * i for i in self.values]))
+            return ft_sqrt(sum([ft_abs(i) * ft_abs(i) for i in self.values]))
         elif self.type == 'column':
-            return ft_sqrt(sum([i[0] * i[0] for i in self.values]))
+            return ft_sqrt(sum([ft_abs(i[0]) * ft_abs(i[0]) for i in self.values]))
         else:
             raise Exception("Vector type not recognized")
 
