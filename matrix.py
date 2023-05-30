@@ -52,7 +52,7 @@ class Matrix():
             raise TypeError("Cannot subtract non-matrix from matrix")
 
     def __mul__(self, other):
-        if isinstance(other, (float, int)):
+        if isinstance(other, (float, int, Complex)):
             return Matrix([[i * other for i in j] for j in self.values])
         elif isinstance(other, Matrix):
             if self.shape[1] == other.shape[0]:
@@ -107,6 +107,12 @@ class Matrix():
 
     def transpose(self):
         return Matrix([[self.values[j][i]for j in range(len(self.values))] for i in range(len(self.values[0]))])
+
+    def conjugate_transpose(self):
+        return Matrix([
+            [self.values[j][i].conjugate() if isinstance(self.values[j][i], Complex) else self.values[j][i]
+             for j in range(len(self.values))]
+            for i in range(len(self.values[0]))])
 
     ##### ROW ECHELON FORM #####
 
@@ -174,7 +180,7 @@ class Matrix():
             raise TypeError("Cannot find inverse of singular matrix")
         else:
             return Matrix([
-                [ft_pow(-1, i+j) * self.submatrix(i, j).determinant()
+                [ft_pow(-1, i + j) * self.submatrix(i, j).determinant()
                  for j in range(self.shape[1])]
                 for i in range(self.shape[0])
             ]).transpose() * (1 / self.determinant())
@@ -183,4 +189,5 @@ class Matrix():
 
     def rank(self):
         return self.row_echelon_form().shape[0] - \
-            sum([all(i == 0 for i in j) for j in self.row_echelon_form().values])
+            sum([all(i == 0 for i in j)
+                for j in self.row_echelon_form().values])

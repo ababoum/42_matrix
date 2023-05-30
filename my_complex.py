@@ -48,10 +48,9 @@ class Complex():
 
     def __rtruediv__(self, other):
         if isinstance(other, Complex):
-            return Complex((other.real * self.real + other.imaginary * self.imaginary) / (self.real * self.real + self.imaginary * self.imaginary),
-                           (other.imaginary * self.real - other.real * self.imaginary) / (self.real * self.real + self.imaginary * self.imaginary))
+            return other.__truediv__(self)
         elif isinstance(other, (int, float)):
-            return Complex(other / self.real, other / self.imaginary)
+            return Complex(other, 0).__truediv__(self)
 
     def __eq__(self, other):
         if isinstance(other, (int, float)):

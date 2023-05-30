@@ -27,9 +27,13 @@ class Vector():
         return len(self.values)
 
     def __str__(self) -> str:
+        if self.type == 'column':
+            return "Vector ({})".format('\n\t'.join(map(str, self.values)))
         return "Vector ({})".format(self.values)
 
     def __repr__(self) -> str:
+        if self.type == 'column':
+            return "Vector ({})".format('\n\t'.join(map(str, self.values)))
         return "Vector ({})".format(self.values)
 
     def __add__(self, other):
